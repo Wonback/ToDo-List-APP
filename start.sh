@@ -39,3 +39,5 @@ echo -e "${GREEN}🧠 Asegúrate de que tu basecita de datos esté cweadita en P
 echo -e "${GREEN}🛠️ Usa dos tewminawes pa' iniciar el pweoyecto 💻"
 echo -e "${GREEN}🌟 Teeeerminaw 1 → cd Server && npm run dev${NC}"
 echo -e "${GREEN}🌟 Teeeerminaw 2 → cd Client && npm run dev${NC}"
+
+read -p "👉 Pwesioná Entew cuandwo quiewas ciewwar esta ventanita~ uwu 💻 "
