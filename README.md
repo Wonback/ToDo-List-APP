@@ -7,17 +7,16 @@ Aplicación web full stack para gestión de tareas. Este proyecto fue desarrolla
 ## ⚙️ Tecnologías utilizadas
 
 ### Frontend (📁 `Client/`)
-- React
-- TypeScript
-- React Router DOM
+- React     Para crear la interfaz web (botones, vistas, inputs)
+- TypeScript 
+- React Router DOM      Para manejar navegación entre vistas: /login, /home, etc
 
 ### Backend (📁 `Server/`)
-- Node.js
-- Express
-- TypeScript
-- Sequelize ORM
-- PostgreSQL
-- JWT y bcrypt para autenticación
+- Node.js   	El motor que corre JavaScript en el backend
+- Express       Framework en Node para crear tu servidor y definir rutas (/api/login, /api/tareas)
+- Sequelize ORM     Traduce objetos de JS/TS a tablas de base de datos
+- PostgreSQL        La base de datos relacional que guarda usuarios y tareas
+- JWT y bcrypt para autenticación sin cookies y cifrado de contraseñas
 
 ---
 
