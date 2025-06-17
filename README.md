@@ -29,9 +29,20 @@ Aplicación web full stack para gestión de tareas. Este proyecto fue desarrolla
 git clone https://github.com/Wonback/ToDo-List-APP.git
 cd ToDo-List-APP
 ```
-
+```bash
+cd ToDo-List-APP
+```
 ### 2. Ejecutá el script de setup
 ```bash
-chmod +x start.sh
-./start.sh
+/start.sh
+```
+### 2.1. Para actualizar los archivos locales a los actualizados del repo
+```bash
+git pull
+```
+### 2.2. Para subir cambios al repo
+```bash
+git add .
+git commit -m "Descripción clara del cambio"
+git push
 ```
