@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
   const [apodo, setApodo] = useState('');
@@ -31,31 +31,26 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Registro</h2>
+    
+
+    <div className="form5">
+      <span>Registro</span>
       <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Apodo"
-          value={apodo}
-          onChange={(e) => setApodo(e.target.value)}
-          required
-        /><br />
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br />
-        <button type="submit">Registrarse</button>
+        <div className="inputBox">
+          <input type="text" placeholder="Apodo" value={apodo} onChange={(e) => setApodo(e.target.value)} required />
+        </div>
+
+        <div className="inputBox">
+          <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+
+        <div className="inputBox">
+          <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
+        <button type="submit">Crear</button>
+        <p>
+          Ya estás registrado? <Link to="/login" >Iniciar Sesion</Link>
+        </p>
       </form>
     </div>
   );
