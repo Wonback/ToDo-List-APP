@@ -23,7 +23,7 @@ if [ ! -f ".env" ]; then
   cat <<EOF > .env
 DB_NAME=todoListDB
 DB_USER=postgres
-DB_PASSWORD= minecraft3
+DB_PASSWORD=minecraft3
 DB_HOST=localhost
 JWT_SECRET=una_clave_segura
 EOF

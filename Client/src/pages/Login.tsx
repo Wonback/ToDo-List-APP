@@ -33,38 +33,30 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
-        <span className="login-title">LogIn Form</span>
-        <form onSubmit={handleLogin}>
-          <div className="inputBox">
-            <input
-              type="email"
-              id="form5-email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <label htmlFor="form5-email">Email or Username</label>
-          </div>
-          <div className="inputBox">
-            <input
-              type="password"
-              id="form5-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <label htmlFor="form5-password">Password</label>
-          </div>
-          <button type="submit">LogIn</button>
-          <p>
-            Don't have an account?
-            <a href="/register"> Create one </a>
-          </p>
-        </form>
-      </div>
+    <div className="form5">
+      <span>LogIn Form</span>
+      <form onSubmit={handleLogin} action="">
+        <div className="inputBox">
+          <input type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)} required id="form5-email" />
+          
+        </div>
+        <div className="inputBox">
+          <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required id="form5-password" />
+        
+        </div>
+        <button type="submit">LogIn</button>
+        <p>
+          No tienes una cuenta?
+          <a href="/#">
+            Crea una cuenta
+          </a>
+        </p>
+      </form>
     </div>
+
   );
 };
 

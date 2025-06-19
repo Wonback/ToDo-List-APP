@@ -1,0 +1,79 @@
+
+.checkbox14 {
+  position: relative;
+}
+
+.checkbox14 label {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  border-radius: 4px;
+  border: 2px solid #4f2edc;
+  background-color: #fff;
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.3s ease;
+}
+
+.checkbox14 label:hover {
+  border-color: #4f2edc;
+}
+
+.checkbox14 .flip {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  transform-style: preserve-3d;
+  transition: all 0.4s ease;
+}
+
+.checkbox14 input {
+  display: none;
+}
+
+.checkbox14 input:checked + label {
+  border-color: #4f2edc;
+}
+
+.checkbox14 input:checked + label .flip {
+  transform: rotateY(180deg);
+}
+
+.checkbox14 .front,
+.checkbox14 .back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+.checkbox14 .front {
+  background: white;
+  z-index: 1;
+}
+
+.checkbox14 .back {
+  transform: rotateY(180deg);
+  background: #4f2edc;
+  text-align: center;
+  color: white;
+  line-height: 20px;
+  box-shadow: 0 0 0 1px #4f2edc;
+}
+
+.checkbox14 .back svg {
+  margin-top: 5px;
+  margin-left: 2px;
+  width: 16px;
+  fill: none;
+}
+
+.checkbox14 .back svg path {
+  stroke: white;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

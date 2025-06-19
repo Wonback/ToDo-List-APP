@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CrearTareaModal from '../components/CrearTareaModal';
 import EditarTareaModal from '../components/EditarTareaModal';
 import { Tarea } from '../Types';
+import '../styles/Home.css'; 
 
 
 const Home = () => {
@@ -15,7 +16,14 @@ const Home = () => {
 
   const token = localStorage.getItem('token');
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   useEffect(() => {
+    
     const obtenerTareas = async () => {
       const res = await fetch('http://localhost:3001/api/tareas', {
         headers: {
@@ -140,9 +148,24 @@ const Home = () => {
             Límite: {new Date(tarea.fechaLimite).toLocaleDateString()}<br />
             Estado: {tarea.completada ? '✅ Completada' : '❌ Pendiente'}<br /><br />
 
-            <button onClick={() => toggleCompletada(tarea)}>
-              {tarea.completada ? '❌ Marcar como pendiente' : '✅ Marcar como completada'}
-            </button>{' '}
+                      <div className="checkbox14">
+                <input 
+                  id="checkbox14-input" 
+                  type="checkbox" 
+                  checked={isChecked} 
+                  onChange={handleCheckboxChange} 
+                />
+                <label htmlFor="checkbox14-input">
+                  <div className="flip">
+                    <div className="front"></div>
+                    <div className="back">
+                      <svg viewBox="0 0 16 14">
+                        <path d="M2 8.5L6 12.5L14 1.5"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </label>
+              </div>
 
             <button onClick={() => {
               setTareaEditando(tarea);
