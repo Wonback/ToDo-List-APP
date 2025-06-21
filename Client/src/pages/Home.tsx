@@ -1,29 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import CrearTareaModal from '../components/CrearTareaModal';
-import EditarTareaModal from '../components/EditarTareaModal';
+import TaskItem from '../components/TaskItem';
 import { Tarea } from '../Types';
-import '../styles/Home.css'; 
+import '../styles/Home.css';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
+const MySwal = withReactContent(Swal);
 
 const Home = () => {
   const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [titulo, setTitulo] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [prioridad, setPrioridad] = useState('media');
-  const [fechaLimite, setFechaLimite] = useState('');
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [tareaEditando, setTareaEditando] = useState<Tarea | null>(null);
-
   const token = localStorage.getItem('token');
 
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
-
   useEffect(() => {
-    
     const obtenerTareas = async () => {
       const res = await fetch('http://localhost:3001/api/tareas', {
         headers: {
@@ -37,79 +25,141 @@ const Home = () => {
       }
     };
 
-    obtenerTareas();
+    if (token) obtenerTareas();
   }, [token]);
 
-  const crearTarea = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const mostrarCrearTarea = async () => {
+    const { value: formValues } = await MySwal.fire({
+      title: 'Crear nueva tarea',
+      html: (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <input id="titulo" className="swal2-input" placeholder="Título" />
+          <input id="descripcion" className="swal2-input" placeholder="Descripción" />
+          <select id="prioridad" className="swal2-input" defaultValue="media">
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+          <input id="fechaLimite" type="date" className="swal2-input" />
+        </div>
+      ),
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Crear',
+      preConfirm: () => {
+        const titulo = (document.getElementById('titulo') as HTMLInputElement).value;
+        const descripcion = (document.getElementById('descripcion') as HTMLInputElement).value;
+        const prioridad = (document.getElementById('prioridad') as HTMLSelectElement).value;
+        const fechaLimite = (document.getElementById('fechaLimite') as HTMLInputElement).value;
 
-    const res = await fetch('http://localhost:3001/api/tareas', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        titulo,
-        descripcion,
-        prioridad,
-        fechaLimite,
-      }),
+        if (!titulo || !descripcion || !fechaLimite) {
+          Swal.showValidationMessage('Todos los campos son obligatorios');
+          return;
+        }
+
+        return { titulo, descripcion, prioridad, fechaLimite };
+      }
     });
 
-    if (res.ok) {
-      const nueva = await res.json();
-      setTareas([...tareas, nueva]);
-      setTitulo('');
-      setDescripcion('');
-      setPrioridad('media');
-      setFechaLimite('');
-      setMostrarModal(false);
-    } else {
-      alert('Error al crear tarea');
+    if (formValues) {
+      const res = await fetch('http://localhost:3001/api/tareas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formValues),
+      });
+
+      if (res.ok) {
+        const nueva = await res.json();
+        setTareas((prev) => [...prev, nueva]);
+        Swal.fire('Tarea creada con éxito', '', 'success');
+      } else {
+        Swal.fire('Error', 'No se pudo crear la tarea', 'error');
+      }
     }
   };
 
-  const handleGuardarCambios = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tareaEditando) return;
+  const mostrarEditarTarea = async (tarea: Tarea) => {
+    const { value: formValues } = await MySwal.fire({
+      title: 'Editar tarea',
+      html: (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <input id="titulo" className="swal2-input" defaultValue={tarea.titulo} placeholder="Título" />
+          <input id="descripcion" className="swal2-input" defaultValue={tarea.descripcion} placeholder="Descripción" />
+          <select id="prioridad" className="swal2-input" defaultValue={tarea.prioridad}>
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+          <input id="fechaLimite" type="date" className="swal2-input" defaultValue={tarea.fechaLimite.slice(0, 10)} />
+        </div>
+      ),
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      preConfirm: () => {
+        const titulo = (document.getElementById('titulo') as HTMLInputElement).value;
+        const descripcion = (document.getElementById('descripcion') as HTMLInputElement).value;
+        const prioridad = (document.getElementById('prioridad') as HTMLSelectElement).value;
+        const fechaLimite = (document.getElementById('fechaLimite') as HTMLInputElement).value;
 
-    const res = await fetch(`http://localhost:3001/api/tareas/${tareaEditando.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ titulo, descripcion, prioridad, fechaLimite }),
+        if (!titulo || !descripcion || !fechaLimite) {
+          Swal.showValidationMessage('Todos los campos son obligatorios');
+          return;
+        }
+
+        return { titulo, descripcion, prioridad, fechaLimite };
+      }
     });
 
-    if (res.ok) {
-      const actualizada = await res.json();
-      setTareas((prev) =>
-        prev.map((t) => (t.id === tareaEditando.id ? actualizada : t))
-      );
-      setTareaEditando(null);
-      setTitulo('');
-      setDescripcion('');
-      setPrioridad('media');
-      setFechaLimite('');
-    } else {
-      alert('Error al actualizar tarea');
+    if (formValues) {
+      const res = await fetch(`http://localhost:3001/api/tareas/${tarea.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formValues),
+      });
+
+      if (res.ok) {
+        const actualizada = await res.json();
+        setTareas((prev) =>
+          prev.map((t) => (t.id === tarea.id ? actualizada : t))
+        );
+        Swal.fire('Tarea actualizada con éxito', '', 'success');
+      } else {
+        Swal.fire('Error', 'No se pudo actualizar la tarea', 'error');
+      }
     }
   };
 
   const eliminarTarea = async (id: number) => {
-    const res = await fetch(`http://localhost:3001/api/tareas/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const confirmacion = await Swal.fire({
+      title: '¿Eliminar tarea?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
     });
 
-    if (res.ok) {
-      setTareas((prev) => prev.filter((t) => t.id !== id));
-    } else {
-      alert('Error al eliminar tarea');
+    if (confirmacion.isConfirmed) {
+      const res = await fetch(`http://localhost:3001/api/tareas/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setTareas((prev) => prev.filter((t) => t.id !== id));
+        Swal.fire('Eliminada', 'La tarea fue eliminada correctamente.', 'success');
+      } else {
+        Swal.fire('Error', 'No se pudo eliminar la tarea', 'error');
+      }
     }
   };
 
@@ -132,87 +182,26 @@ const Home = () => {
         )
       );
     } else {
-      alert('Error al cambiar estado');
+      Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
     }
   };
 
   return (
     <div>
       <h2>Lista de Tareas</h2>
-      <button onClick={() => setMostrarModal(true)}>+ Nueva tarea</button>
+      <button onClick={mostrarCrearTarea}>+ Nueva tarea</button>
 
-      <ul>
+      <ul className="task-list">
         {tareas.map((tarea) => (
-          <li key={tarea.id}>
-            <strong>{tarea.titulo}</strong> - {tarea.descripcion} ({tarea.prioridad})<br />
-            Límite: {new Date(tarea.fechaLimite).toLocaleDateString()}<br />
-            Estado: {tarea.completada ? '✅ Completada' : '❌ Pendiente'}<br /><br />
-
-                      <div className="checkbox14">
-                <input 
-                  id="checkbox14-input" 
-                  type="checkbox" 
-                  checked={isChecked} 
-                  onChange={handleCheckboxChange} 
-                />
-                <label htmlFor="checkbox14-input">
-                  <div className="flip">
-                    <div className="front"></div>
-                    <div className="back">
-                      <svg viewBox="0 0 16 14">
-                        <path d="M2 8.5L6 12.5L14 1.5"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </label>
-              </div>
-
-            <button onClick={() => {
-              setTareaEditando(tarea);
-              setTitulo(tarea.titulo);
-              setDescripcion(tarea.descripcion);
-              setPrioridad(tarea.prioridad);
-              setFechaLimite(tarea.fechaLimite.slice(0, 10));
-            }}>
-              ✏ Editar
-            </button>{' '}
-
-            <button onClick={() => eliminarTarea(tarea.id)}>🗑 Eliminar</button>
-            <hr />
-          </li>
+          <TaskItem
+            key={tarea.id}
+            tarea={tarea}
+            onEditar={mostrarEditarTarea}
+            onEliminar={eliminarTarea}
+            onToggle={toggleCompletada}
+          />
         ))}
       </ul>
-
-      {mostrarModal && (
-        <CrearTareaModal
-          titulo={titulo}
-          descripcion={descripcion}
-          prioridad={prioridad}
-          fechaLimite={fechaLimite}
-          setTitulo={setTitulo}
-          setDescripcion={setDescripcion}
-          setPrioridad={setPrioridad}
-          setFechaLimite={setFechaLimite}
-          crearTarea={crearTarea}
-          cerrar={() => setMostrarModal(false)}
-        />
-      )}
-
-      {tareaEditando && (
-        <EditarTareaModal
-          tarea={tareaEditando}
-          titulo={titulo}
-          descripcion={descripcion}
-          prioridad={prioridad}
-          fechaLimite={fechaLimite}
-          setTitulo={setTitulo}
-          setDescripcion={setDescripcion}
-          setPrioridad={setPrioridad}
-          setFechaLimite={setFechaLimite}
-          guardarCambios={handleGuardarCambios}
-          cerrar={() => setTareaEditando(null)}
-        />
-      )}
     </div>
   );
 };
