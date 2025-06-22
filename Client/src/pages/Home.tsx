@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import TaskItem from '../components/TaskItem';
 import { Tarea } from '../Types';
-import '../styles/Home.css';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import BotonAgregarTarea from '../components/BotonAgregarTarea';
+
+
 
 const MySwal = withReactContent(Swal);
 
@@ -35,7 +37,7 @@ const Home = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <input id="titulo" className="swal2-input" placeholder="Título" />
           <input id="descripcion" className="swal2-input" placeholder="Descripción" />
-          <select id="prioridad" className="swal2-input" defaultValue="media">
+          <select id="prioridad" className="swal2-input" defaultValue="media" style={{ margin: '20px 40px 3px' }}>
             <option value="baja">Baja</option>
             <option value="media">Media</option>
             <option value="alta">Alta</option>
@@ -46,6 +48,7 @@ const Home = () => {
       focusConfirm: false,
       showCancelButton: true,
       confirmButtonText: 'Crear',
+      confirmButtonColor: 'rgb(45, 226, 90)',
       preConfirm: () => {
         const titulo = (document.getElementById('titulo') as HTMLInputElement).value;
         const descripcion = (document.getElementById('descripcion') as HTMLInputElement).value;
@@ -187,11 +190,18 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h2>Lista de Tareas</h2>
-      <button onClick={mostrarCrearTarea}>+ Nueva tarea</button>
+    <div style={{
+    minHeight: '100vh',
+    background: 'linear-gradient(45deg, #fa466e, #415efa)',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }}>
+      
+      <BotonAgregarTarea onClick={mostrarCrearTarea} />
+      
 
-      <ul className="task-list">
+      <ul className="task-list" style={{marginTop: '0px', paddingTop: '10px', paddingLeft:'10vw',paddingRight:'10vw'}}>
         {tareas.map((tarea) => (
           <TaskItem
             key={tarea.id}

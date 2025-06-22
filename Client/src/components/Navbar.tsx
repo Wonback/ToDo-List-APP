@@ -1,13 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
+import BotonLogout from './BotonLogout';
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
   return (
     <nav style={styles.nav}>
-      <span style={styles.brand}>📝 To-Do App</span>
+      <span style={styles.brand}>RE-Mind</span>
 
       <div style={styles.links}>
         {!isAuthenticated && location.pathname !== '/login' && (
@@ -18,8 +18,8 @@ const Navbar = () => {
         )}
         {isAuthenticated && (
           <>
-            <Link to="/home" style={styles.link}>Mis tareas</Link>
-            <button onClick={logout} style={styles.logout}>Cerrar sesión</button>
+            <BotonLogout onClick={logout}/>
+            
           </>
         )}
       </div>
@@ -52,14 +52,7 @@ const styles = {
     background: '#555',
     borderRadius: '4px',
   },
-  logout: {
-    color: '#fff',
-    background: '#e74c3c',
-    border: 'none',
-    padding: '6px 12px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
+  
 };
 
 export default Navbar;
